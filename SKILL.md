@@ -64,7 +64,22 @@ It also adds references to `projects/<app-name>/tsconfig.*.json` inside the root
 > after every `ng generate application`. The per-project tsconfig files stay — only
 > remove the entries inside the root `"references": [...]` array.
 
-## Step 4 — Create public entry point
+## Step 4 — Add root route to the new app
+
+Update `projects/<app-name>/src/app/app.routes.ts` to define a root route that renders
+the app's `App` component. Without this, Angular loads the lazy chunk but finds no
+matching route and renders nothing:
+
+```typescript
+import { Routes } from '@angular/router';
+import { App } from './app';
+
+export const routes: Routes = [
+  { path: '', component: App },
+];
+```
+
+## Step 5 — Create public entry point and scoped package name
 
 Angular CLI does not generate a `package.json` or `index.ts` for application projects.
 Create both manually:
@@ -81,7 +96,7 @@ export { routes } from './app/app.routes';
 
 This `index.ts` is the public API for the lazy-loaded app.
 
-## Step 5 — Register path alias in tsconfig.app.json
+## Step 6 — Register path alias in tsconfig.app.json
 
 In the main app's `tsconfig.app.json`, add a `paths` entry (TypeScript 6 style —
 no `baseUrl` needed; use relative paths from the workspace root):
@@ -101,7 +116,7 @@ no `baseUrl` needed; use relative paths from the workspace root):
 > Do NOT remove `rootDir` from `tsconfig.app.json` if it was already absent; if it
 > was present, remove it since it conflicts with resolving paths outside `./src`.
 
-## Step 6 — Wire lazy route (if requested)
+## Step 7 — Wire lazy route (if requested)
 
 In the main app's route file (default: `src/app/app.routes.ts`), add:
 
@@ -114,7 +129,7 @@ In the main app's route file (default: `src/app/app.routes.ts`), add:
 
 If the routes array is empty, replace it. If it already has routes, append.
 
-## Step 6 — Report success
+## Step 8 — Report success
 
 Print a summary:
 
